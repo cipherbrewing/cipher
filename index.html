@@ -144,7 +144,7 @@
       <div class="letter">
         <p>So you made it in.</p>
         <p>You brewed it right. You found the envelope at the bottom of the bag. You sat with four cards until they made sense. And then you said the word.</p>
-        <p>The word is <span class="word">funk</span> — and it isn't a password. It's what you just tasted. That wild, fermented note most roasters quietly breed out of their beans because they're afraid you won't get it.</p>
+        <p>The word is <span class="word" id="theWord"></span> — and it isn't a password. It's what you just tasted. That wild, fermented note most roasters quietly breed out of their beans because they're afraid you won't get it.</p>
         <p>We left it in. We bet on you getting it.</p>
         <p>Turns out we were right.</p>
         <p class="sign">— Tushar</p>
@@ -189,10 +189,27 @@
 <script>
 (function(){
   /* ====== CONFIG — edit these ====== */
-  var ANSWER = "FUNK";          // the password the puzzle reveals
+  // The answer is never stored in plaintext. ANSWER_HASH is the SHA-256 of the
+  // (uppercased) password. To change the password: hash your new word with
+  // SHA-256 and paste the hex digest here.
+  var ANSWER_HASH = "65a8400e6187c90bfb5048c22533a9e58f6afe8c816f58aa3f82c1ecb00c57f3";
+  // The reveal word is stored as offset char codes (code - 17 = ASCII), so the
+  // literal word appears nowhere in the source. Decoded at runtime after unlock.
+  var WORD_ENC = [119,134,127,124];   // lowercase, for the letter text
   var REORDER_URL = "#";        // where "brew again" should go (a reorder / next-drop page)
-  var WEB3FORMS_KEY = "e2d8e9cc-e99d-4fbf-a449-0fd3b7de5d0c";  // paste your key from web3forms.com
+  var WEB3FORMS_KEY = "YOUR-ACCESS-KEY-HERE";  // paste your key from web3forms.com
   /* ================================= */
+
+  // rebuild the word from offset codes only when needed (kept out of plain source)
+  function decodeWord(){ return WORD_ENC.map(function(n){ return String.fromCharCode(n-17); }).join(''); }
+  // async SHA-256 using the browser's built-in crypto (no library needed)
+  function sha256Hex(str){
+    var bytes = new TextEncoder().encode(str);
+    return crypto.subtle.digest('SHA-256', bytes).then(function(buf){
+      var arr = Array.prototype.slice.call(new Uint8Array(buf));
+      return arr.map(function(b){ return ('0'+b.toString(16)).slice(-2); }).join('');
+    });
+  }
 
   var pw    = document.getElementById('pw');
   var slots = document.querySelectorAll('.slot');
@@ -241,12 +258,14 @@
   function submit(){
     var v = pw.value.toUpperCase().replace(/[^A-Z]/g,'');
     if (v.length < 4) return;
-    if (v === ANSWER){
-      msg.textContent = 'welcome in.';
-      msg.style.color = 'var(--amber)';
-      slots.forEach(function(s){ s.style.borderBottomColor = 'var(--amber)'; });
-      setTimeout(openReveal, 700);
-    } else { fail(); }
+    sha256Hex(v).then(function(h){
+      if (h === ANSWER_HASH){
+        msg.textContent = 'welcome in.';
+        msg.style.color = 'var(--amber)';
+        slots.forEach(function(s){ s.style.borderBottomColor = 'var(--amber)'; });
+        setTimeout(openReveal, 700);
+      } else { fail(); }
+    });
   }
 
   pw.addEventListener('input', function(){
@@ -256,7 +275,17 @@
 
   /* ---- reveal beat: word decodes in, then note fades ---- */
   function runBeat(){
-    var seq = ['····','f···','fu··','fun·','funk'];
+    var word = decodeWord();                 // the reveal word, rebuilt at runtime
+    var dots = new Array(word.length+1).join('·');
+    // build the progressive-reveal sequence: ···· -> f··· -> fu·· -> ... -> full word
+    var seq = [dots];
+    for (var k=1;k<=word.length;k++){
+      seq.push(word.slice(0,k) + new Array(word.length-k+1).join('·'));
+    }
+    // also drop the word into the visible letter now that we're unlocked
+    var slot = document.getElementById('theWord');
+    if (slot) slot.textContent = word;
+
     var i = 0;
     var iv = setInterval(function(){
       i++;
