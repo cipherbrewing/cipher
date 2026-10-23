@@ -1,74 +1,778 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
 <title>Cipher Brewing</title>
+
 <style>
-  :root{
-    --bg:#0a0a0a;
-    --ink:#cfcfcf;
-    --ink-dim:#8a8a8a;
-    --ink-faint:#5a5a5a;
-    --line:#333;
-    --line-soft:#222;
-    --amber:#c9a26a;
-    --err:#7a4a4a;
-    --mono:"SFMono-Regular",ui-monospace,"Menlo","Consolas",monospace;
+:root {
+  --bg: #0a0a0a;
+  --ink: #cfcfcf;
+  --ink-dim: #8a8a8a;
+  --ink-faint: #5a5a5a;
+  --line: #333;
+  --line-soft: #222;
+  --amber: #c9a26a;
+  --err: #bd7777;
+  --mono: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* PASSWORD GATE */
+
+#gate {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: opacity 0.8s ease;
+}
+
+.brandmark {
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: var(--ink-faint);
+  margin-bottom: 2.4rem;
+  text-transform: uppercase;
+}
+
+.prompt {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  line-height: 1.9;
+  margin-bottom: 2.2rem;
+}
+
+#password-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#dots {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 2rem;
+  cursor: text;
+}
+
+.slot {
+  width: 38px;
+  height: 48px;
+  border-bottom: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #e8e8e8;
+  transition: border-color 0.3s;
+}
+
+#dots.active .slot {
+  border-color: var(--amber);
+}
+
+#pw {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#tap {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1.6rem;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+#tap:hover,
+#tap:focus-visible {
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+#tap:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#msg {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  min-height: 32px;
+  line-height: 1.7;
+}
+
+#msg.error {
+  color: var(--err);
+}
+
+#msg.success {
+  color: var(--amber);
+}
+
+.gate-footer {
+  position: absolute;
+  bottom: 22px;
+  color: #353535;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-align: center;
+  width: calc(100% - 40px);
+}
+
+/* REVEAL */
+
+#reveal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  isolation: isolate;
+  padding: 3rem 1.6rem;
+}
+
+#collage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+#collage .ct {
+  background: radial-gradient(
+    ellipse at center,
+    #333 0%,
+    #111 70%
+  );
+  border: 1px solid #171717;
+}
+
+#collage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 10, 10, 0.7) 0%,
+    rgba(10, 10, 10, 0.96) 100%
+  );
+}
+
+#beat {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 1s ease;
+}
+
+#beatword {
+  font-size: 24px;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  color: var(--amber);
+}
+
+.beat-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #4a4a4a;
+  margin-top: 1.4rem;
+  text-align: center;
+}
+
+#note {
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 3rem;
+}
+
+#note .brandmark {
+  text-align: center;
+  margin-bottom: 2.6rem;
+}
+
+.letter {
+  font-size: 13px;
+  line-height: 2.1;
+  color: var(--ink);
+  letter-spacing: 0.025em;
+}
+
+.letter p {
+  margin: 0 0 1.4rem;
+}
+
+.word {
+  color: var(--amber);
+}
+
+.sign {
+  color: var(--ink-dim);
+  margin-bottom: 0.4rem !important;
+}
+
+.sign-sub {
+  color: var(--ink-faint);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+/* CONTACT */
+
+.contact {
+  margin-top: 2.8rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.contact-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 1.4rem;
+  text-align: center;
+}
+
+.contact-head {
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+
+.contact-copy {
+  font-size: 12px;
+  line-height: 2;
+  color: var(--ink-dim);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.contact-link {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  color: var(--amber);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid #655238;
+  padding-bottom: 5px;
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+  color: #f0d2a0;
+  border-color: var(--amber);
+}
+
+.bottom-note {
+  text-align: center;
+  margin-top: 3rem;
+  color: #414141;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 480px) {
+  #reveal {
+    padding: 2.5rem 1.25rem;
   }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;min-height:100%;}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--mono);
-    -webkit-font-smoothing:antialiased;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:100vh;
+
+  #dots {
+    gap: 10px;
   }
 
-  /* ---------- GATE ---------- */
-  #gate{width:100%;max-width:360px;text-align:center;padding:2rem 1.2rem;transition:opacity .8s;}
-  .brandmark{font-size:12px;letter-spacing:.4em;color:var(--ink-faint);margin-bottom:2.4rem;}
-  .prompt{font-size:13px;letter-spacing:.12em;color:var(--ink-dim);line-height:1.9;margin-bottom:2.2rem;}
-  #dots{display:flex;gap:14px;justify-content:center;margin-bottom:2rem;}
-  .slot{width:38px;height:48px;border-bottom:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;color:#e8e8e8;transition:border-color .3s;}
-  #pwwrap{position:relative;}
-  #pw{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;border:0;background:transparent;font-size:16px;cursor:pointer;}
-  #tap{background:transparent;border:.5px solid var(--line);color:var(--ink-dim);font-family:var(--mono);font-size:12px;letter-spacing:.2em;padding:10px 22px;border-radius:8px;cursor:pointer;margin-bottom:1.6rem;}
-  #tap:hover{border-color:var(--ink-faint);color:var(--ink);}
-  #msg{font-size:12px;letter-spacing:.1em;color:var(--ink-faint);min-height:18px;}
-
-  /* ---------- REVEAL ---------- */
-  #reveal{display:none;position:fixed;inset:0;background:var(--bg);padding:3rem 1.6rem;overflow-y:auto;}
-  #beat{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:5;}
-  #beatword{font-size:28px;letter-spacing:.5em;color:var(--amber);padding-left:.5em;}
-  .beat-label{font-size:11px;letter-spacing:.3em;color:#4a4a4a;margin-top:1.4rem;text-align:center;}
-  #note{opacity:0;transition:opacity 1.4s;max-width:440px;margin:0 auto;position:relative;z-index:2;}
-  #note .brandmark{text-align:center;margin-bottom:2.6rem;}
-
-  /* ---------- COLLAGE BACKGROUND (solid tiles, swap in your photos) ---------- */
-  #collage{
-    position:fixed;inset:0;z-index:0;
-    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
-    opacity:.4;pointer-events:none;
+  .slot {
+    width: 34px;
+    height: 44px;
   }
-  #collage .ct{background:#1a1a1a;}
-  #collage::after{
-    content:"";position:absolute;inset:0;
-    background:radial-gradient(ellipse at center, rgba(10,10,10,.55) 0%, rgba(10,10,10,.78) 100%);
+
+  .letter {
+    font-size: 12px;
   }
-  @media (max-width:860px){ #collage{opacity:.32;} }
 
-  .letter{font-size:14px;line-height:2.1;color:var(--ink);letter-spacing:.04em;}
-  .letter p{margin:0 0 1.4rem;}
-  .word{color:var(--amber);}
-  .sign{color:var(--ink-dim);margin-bottom:.4rem!important;}
-  .sign-sub{color:var(--ink-faint);font-size:12px;letter-spacing:.06em;margin:0;}
+  #beatword {
+    font-size: 20px;
+  }
+}
 
-  /* ---------- CONTACT FORM ---------- */
-  .contact{margin-top:2.8rem;padding-top:1.8rem;border-top:.5px solid var(--line-soft);max-width:440px;margin-left:auto;margin-right:auto;}
-  .contact-label{font-size:11px;letter-spacing:.2em;color:var(--ink-faint);margin-bottom:1.4rem;text-align:center;}
-  .contact-head{font-size:15px;letter-spacing:
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD GATE -->
+
+<main id="gate">
+
+  <div class="brandmark">CIPHER BREWING</div>
+
+  <div class="prompt">
+    SOME THINGS ARE NOT FOUND.<br>
+    THEY ARE UNLOCKED.
+  </div>
+
+  <form id="password-form" autocomplete="off">
+
+    <div id="dots" aria-hidden="true">
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+    </div>
+
+    <label for="pw" class="prompt">
+      ENTER THE FOUR-LETTER KEY
+    </label>
+
+    <input
+      id="pw"
+      name="password"
+      type="password"
+      maxlength="4"
+      minlength="4"
+      autocomplete="off"
+      autocapitalize="none"
+      spellcheck="false"
+      aria-label="Enter the four-letter key"
+      required
+    >
+
+    <button id="tap" type="submit">
+      UNLOCK
+    </button>
+
+    <div id="msg" role="status" aria-live="polite">
+      FOUR LETTERS. ONE WAY IN.
+    </div>
+
+  </form>
+
+  <div class="gate-footer">
+    CIPHER BREWING · EST. IN CURIOSITY
+  </div>
+
+</main>
+
+<!-- REVEAL -->
+
+<section id="reveal" aria-label="Cipher Brewing reveal">
+
+  <div id="collage" aria-hidden="true">
+    <div class="ct"></div>
+    <div class="ct"></div>
+    <div class="ct"></div>
+    <div class="ct"></div>
+  </div>
+
+  <div id="beat">
+    <div id="beatword">CIPHER</div>
+    <div class="beat-label">
+      SOME PATTERNS ARE WORTH BREAKING
+    </div>
+  </div>
+
+  <article id="note">
+
+    <div class="brandmark">CIPHER BREWING</div>
+
+    <div class="letter">
+
+      <p>You've found your way in.</p>
+
+      <p>
+        Coffee has always been more than a drink.
+        It is a collection of variables, small decisions,
+        and discoveries that reveal themselves one cup at a time.
+      </p>
+
+      <p>
+        At <span class="word">Cipher</span>, we believe the
+        process deserves as much attention as the result.
+        Every detail carries a clue. Every cup tells a story.
+      </p>
+
+      <p>
+        This little space is an invitation to look closer,
+        question the obvious, and find something unexpected
+        in the familiar ritual of brewing.
+      </p>
+
+      <p>
+        The first clue was only the beginning.
+      </p>
+
+      <p class="sign">Keep looking closer.</p>
+      <p class="sign-sub">CIPHER BREWING</p>
+
+    </div>
+
+    <section class="contact">
+
+      <div class="contact-label">
+        THE CONVERSATION CONTINUES
+      </div>
+
+      <div class="contact-head">
+        Some discoveries are better shared.
+      </div>
+
+      <p class="contact-copy">
+        Follow the trail. Stay curious.
+        There is always another layer to uncover.
+      </p>
+
+      <a
+        class="contact-link"
+        href="https://cipherbrewing.github.io/cipher/"
+      >
+        RETURN TO CIPHER ↗
+      </a>
+
+    </section>
+
+    <div class="bottom-note">
+      END OF THIS CHAPTER · NOT THE STORY
+    </div>
+
+  </article>
+
+</section>
+
+<script>
+"use strict";
+
+/*
+  CIPHER BREWING PASSWORD GATE
+
+  Password: rift
+  Algorithm: SHA-256
+
+  The hash below is the correct SHA-256 digest
+  of the lowercase password "rift".
+*/
+
+const EXPECTED_HASH =
+  "168ee09f96df4c38849d14d6b72b238995289c6014d8602d1c0b71f0db58c429";
+
+const form = document.getElementById("password-form");
+const passwordInput = document.getElementById("pw");
+const button = document.getElementById("tap");
+const message = document.getElementById("msg");
+const dots = document.getElementById("dots");
+const slots = document.querySelectorAll(".slot");
+
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_MS = 15000;
+
+let failedAttempts = 0;
+let lockedUntil = 0;
+let isVerifying = false;
+let lockoutTimer = null;
+
+/* SHA-256 HASHING */
+
+async function sha256(text) {
+  if (!window.crypto || !window.crypto.subtle) {
+    throw new Error("Web Crypto API is unavailable.");
+  }
+
+  const bytes = new TextEncoder().encode(text);
+
+  const digest = await window.crypto.subtle.digest(
+    "SHA-256",
+    bytes
+  );
+
+  return Array.from(new Uint8Array(digest))
+    .map(byte => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/* INTERFACE */
+
+function setMessage(text, type = "") {
+  message.textContent = text;
+  message.className = type;
+}
+
+function updateSlots() {
+  const value = passwordInput.value;
+
+  slots.forEach((slot, index) => {
+    slot.textContent = value[index] ? "•" : "";
+
+    slot.style.borderColor = value[index]
+      ? "var(--amber)"
+      : "";
+  });
+}
+
+function showReveal() {
+  const gate = document.getElementById("gate");
+  const reveal = document.getElementById("reveal");
+  const beat = document.getElementById("beat");
+  const note = document.getElementById("note");
+
+  gate.style.opacity = "0";
+
+  window.setTimeout(() => {
+    gate.style.display = "none";
+    reveal.style.display = "block";
+
+    window.setTimeout(() => {
+      beat.style.opacity = "0";
+
+      window.setTimeout(() => {
+        beat.style.display = "none";
+        note.style.opacity = "1";
+      }, 1000);
+
+    }, 1300);
+
+  }, 800);
+}
+
+/* TEMPORARY ATTEMPT DELAY */
+
+function startLockout() {
+  lockedUntil = Date.now() + LOCKOUT_MS;
+  failedAttempts = 0;
+  button.disabled = true;
+
+  if (lockoutTimer) {
+    clearInterval(lockoutTimer);
+  }
+
+  function updateCountdown() {
+    const remaining = Math.ceil(
+      (lockedUntil - Date.now()) / 1000
+    );
+
+    if (remaining <= 0) {
+      clearInterval(lockoutTimer);
+      lockoutTimer = null;
+      lockedUntil = 0;
+      button.disabled = false;
+
+      setMessage("YOU MAY TRY AGAIN.");
+      passwordInput.focus();
+
+      return;
+    }
+
+    setMessage(
+      `TOO MANY ATTEMPTS. WAIT ${remaining} SECONDS.`,
+      "error"
+    );
+  }
+
+  updateCountdown();
+  lockoutTimer = setInterval(updateCountdown, 250);
+}
+
+/* PASSWORD VERIFICATION */
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (isVerifying) return;
+
+  if (Date.now() < lockedUntil) {
+    const remaining = Math.ceil(
+      (lockedUntil - Date.now()) / 1000
+    );
+
+    setMessage(
+      `PLEASE WAIT ${remaining} SECONDS.`,
+      "error"
+    );
+
+    return;
+  }
+
+  const password = passwordInput.value;
+
+  if (password.length !== 4) {
+    setMessage("ENTER ALL FOUR LETTERS.", "error");
+    passwordInput.focus();
+    return;
+  }
+
+  isVerifying = true;
+  button.disabled = true;
+
+  setMessage("VERIFYING...");
+
+  try {
+    const enteredHash = await sha256(password);
+
+    if (enteredHash === EXPECTED_HASH) {
+      setMessage("ACCESS GRANTED.", "success");
+
+      passwordInput.value = "";
+      updateSlots();
+
+      showReveal();
+      return;
+    }
+
+    failedAttempts++;
+
+    passwordInput.value = "";
+    updateSlots();
+
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      startLockout();
+    } else {
+      const remaining = MAX_ATTEMPTS - failedAttempts;
+
+      setMessage(
+        `NOT QUITE. ${remaining} ATTEMPT${remaining === 1 ? "" : "S"} REMAINING.`,
+        "error"
+      );
+    }
+
+  } catch (error) {
+    console.error("Verification error:", error);
+
+    setMessage(
+      "VERIFICATION UNAVAILABLE. PLEASE TRY AGAIN.",
+      "error"
+    );
+
+  } finally {
+    isVerifying = false;
+
+    if (Date.now() >= lockedUntil) {
+      button.disabled = false;
+    }
+
+    if (document.getElementById("reveal").style.display !== "block") {
+      passwordInput.focus();
+    }
+  }
+});
+
+/* INPUT HANDLING */
+
+passwordInput.addEventListener("input", () => {
+  passwordInput.value = passwordInput.value
+    .replace(/[^a-zA-Z]/g, "")
+    .toLowerCase()
+    .slice(0, 4);
+
+  updateSlots();
+
+  if (passwordInput.value.length > 0) {
+    dots.classList.add("active");
+  } else {
+    dots.classList.remove("active");
+  }
+});
+
+passwordInput.addEventListener("focus", () => {
+  dots.classList.add("active");
+});
+
+passwordInput.addEventListener("blur", () => {
+  if (!passwordInput.value) {
+    dots.classList.remove("active");
+  }
+});
+
+dots.addEventListener("click", () => {
+  passwordInput.focus();
+});
+
+document.getElementById("gate").addEventListener("click", event => {
+  if (
+    event.target.closest("#tap") ||
+    event.target.closest("#pw")
+  ) {
+    return;
+  }
+
+  passwordInput.focus();
+});
+
+/* INITIAL STATE */
+
+updateSlots();
+</script>
+
+</body>
+</html>
+```
