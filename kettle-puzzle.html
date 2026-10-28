@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0a0a">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Cipher Brewing</title>
 
 <style>
@@ -15,8 +14,8 @@
   --line: #333;
   --line-soft: #222;
   --amber: #c9a26a;
-  --err: #bd7777;
-  --mono: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+  --err: #7a4a4a;
+  --mono: "SFMono-Regular", ui-monospace, "Menlo", "Consolas", monospace;
 }
 
 * {
@@ -27,7 +26,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
@@ -35,26 +34,29 @@ body {
   color: var(--ink);
   font-family: var(--mono);
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
 }
 
 /* PASSWORD GATE */
 
 #gate {
   width: 100%;
-  max-width: 420px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  padding: 2rem 1.2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  max-width: 360px;
   text-align: center;
-  position: relative;
-  transition: opacity 0.8s ease;
+  padding: 2rem 1.2rem;
+  transition: transform 0.06s, opacity 0.8s;
 }
 
 .brandmark {
@@ -62,7 +64,6 @@ body {
   letter-spacing: 0.4em;
   color: var(--ink-faint);
   margin-bottom: 2.4rem;
-  text-transform: uppercase;
 }
 
 .prompt {
@@ -73,19 +74,11 @@ body {
   margin-bottom: 2.2rem;
 }
 
-#password-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 #dots {
   display: flex;
   gap: 14px;
   justify-content: center;
   margin-bottom: 2rem;
-  cursor: text;
 }
 
 .slot {
@@ -100,67 +93,46 @@ body {
   transition: border-color 0.3s;
 }
 
-#dots.active .slot {
-  border-color: var(--amber);
+#pwwrap {
+  position: relative;
 }
 
 #pw {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  pointer-events: none;
+  border: 0;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 #tap {
   background: transparent;
-  border: 1px solid var(--line);
+  border: 0.5px solid var(--line);
   color: var(--ink-dim);
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.2em;
-  padding: 12px 24px;
+  padding: 10px 22px;
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 1.6rem;
-  transition: border-color 0.3s, color 0.3s;
 }
 
-#tap:hover,
-#tap:focus-visible {
-  border-color: var(--amber);
+#tap:hover {
+  border-color: var(--ink-faint);
   color: var(--ink);
 }
 
-#tap:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 #msg {
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: 12px;
+  letter-spacing: 0.1em;
   color: var(--ink-faint);
-  min-height: 32px;
-  line-height: 1.7;
-}
-
-#msg.error {
-  color: var(--err);
-}
-
-#msg.success {
-  color: var(--amber);
-}
-
-.gate-footer {
-  position: absolute;
-  bottom: 22px;
-  color: #353535;
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-align: center;
-  width: calc(100% - 40px);
+  min-height: 18px;
 }
 
 /* REVEAL */
@@ -170,63 +142,29 @@ body {
   position: fixed;
   inset: 0;
   background: var(--bg);
-  overflow-y: auto;
-  isolation: isolate;
   padding: 3rem 1.6rem;
-}
-
-#collage {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  opacity: 0.25;
-  pointer-events: none;
-}
-
-#collage .ct {
-  background: radial-gradient(
-    ellipse at center,
-    #333 0%,
-    #111 70%
-  );
-  border: 1px solid #171717;
-}
-
-#collage::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(10, 10, 10, 0.7) 0%,
-    rgba(10, 10, 10, 0.96) 100%
-  );
+  overflow-y: auto;
 }
 
 #beat {
-  position: fixed;
+  position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: var(--bg);
   z-index: 5;
-  transition: opacity 1s ease;
 }
 
 #beatword {
-  font-size: 24px;
+  font-size: 28px;
   letter-spacing: 0.5em;
-  padding-left: 0.5em;
   color: var(--amber);
+  padding-left: 0.5em;
 }
 
 .beat-label {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.3em;
   color: #4a4a4a;
   margin-top: 1.4rem;
@@ -235,12 +173,11 @@ body {
 
 #note {
   opacity: 0;
-  transition: opacity 1.4s ease;
-  max-width: 520px;
+  transition: opacity 1.4s;
+  max-width: 440px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  padding-bottom: 3rem;
 }
 
 #note .brandmark {
@@ -248,11 +185,59 @@ body {
   margin-bottom: 2.6rem;
 }
 
+/* BLACK-AND-WHITE PHOTO COLLAGE */
+
+#collage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  opacity: 0.40;
+  pointer-events: none;
+}
+
+#collage .ct {
+  overflow: hidden;
+}
+
+#collage .ct img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+}
+
+/* Dark overlay improves readability of the letter */
+
+#collage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 10, 10, 0.55) 0%,
+    rgba(10, 10, 10, 0.78) 100%
+  );
+}
+
+#beat {
+  background: var(--bg);
+}
+
+@media (max-width: 860px) {
+  #collage {
+    opacity: 0.32;
+  }
+}
+
 .letter {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 2.1;
   color: var(--ink);
-  letter-spacing: 0.025em;
+  letter-spacing: 0.04em;
 }
 
 .letter p {
@@ -270,21 +255,60 @@ body {
 
 .sign-sub {
   color: var(--ink-faint);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   margin: 0;
 }
 
-/* CONTACT */
+.footer {
+  margin-top: 2.8rem;
+  padding-top: 1.8rem;
+  border-top: 0.5px solid var(--line-soft);
+  text-align: center;
+}
+
+.footer-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 0.9rem;
+}
+
+#hidden {
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: #3a3a3a;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.6s;
+}
+
+#decoded {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+  margin-top: 0.8rem;
+  height: 16px;
+}
+
+#decoded a {
+  color: var(--amber);
+  text-decoration: none;
+}
+
+/* CONTACT FORM */
 
 .contact {
   margin-top: 2.8rem;
   padding-top: 1.8rem;
-  border-top: 1px solid var(--line-soft);
+  border-top: 0.5px solid var(--line-soft);
+  max-width: 440px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .contact-label {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.2em;
   color: var(--ink-faint);
   margin-bottom: 1.4rem;
@@ -293,79 +317,126 @@ body {
 
 .contact-head {
   font-size: 15px;
-  letter-spacing: 0.04em;
-  line-height: 1.8;
-  color: var(--ink);
+  letter-spacing: 0.06em;
+  color: var(--amber);
   text-align: center;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1rem;
 }
 
-.contact-copy {
-  font-size: 12px;
-  line-height: 2;
+.contact-note {
+  font-size: 13px;
+  line-height: 1.9;
+  letter-spacing: 0.03em;
   color: var(--ink-dim);
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin: 0 auto 1.4rem;
+  max-width: 380px;
 }
 
-.contact-link {
-  display: block;
-  width: fit-content;
-  margin: 0 auto;
-  color: var(--amber);
-  text-decoration: none;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  border-bottom: 1px solid #655238;
-  padding-bottom: 5px;
-}
-
-.contact-link:hover,
-.contact-link:focus-visible {
-  color: #f0d2a0;
-  border-color: var(--amber);
-}
-
-.bottom-note {
+.contact-tease {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
   text-align: center;
-  margin-top: 3rem;
-  color: #414141;
-  font-size: 9px;
+  margin-top: 0.9rem;
+  font-style: italic;
+}
+
+.field {
+  margin-bottom: 1.1rem;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 0.5px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 8px 2px;
+  outline: none;
+  transition: border-color 0.3s;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-bottom-color: var(--amber);
+}
+
+.field textarea {
+  min-height: 70px;
+  line-height: 1.7;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #3a3a3a;
+}
+
+#send {
+  width: 100%;
+  background: transparent;
+  border: 0.5px solid var(--line);
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 12px;
   letter-spacing: 0.2em;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.6rem;
+  transition: border-color 0.3s, color 0.3s;
 }
 
-/* RESPONSIVE */
-
-@media (max-width: 480px) {
-  #reveal {
-    padding: 2.5rem 1.25rem;
-  }
-
-  #dots {
-    gap: 10px;
-  }
-
-  .slot {
-    width: 34px;
-    height: 44px;
-  }
-
-  .letter {
-    font-size: 12px;
-  }
-
-  #beatword {
-    font-size: 20px;
-  }
+#send:hover:not(:disabled) {
+  border-color: var(--amber);
+  color: var(--amber);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-  }
+#send:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+#formMsg {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  min-height: 18px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* SOUND TOGGLE */
+
+#sound {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#sound:hover {
+  color: var(--amber);
 }
 </style>
 </head>
@@ -374,375 +445,450 @@ body {
 
 <!-- PASSWORD GATE -->
 
-<main id="gate">
+<div id="gate">
+  <h1 class="sr-only">
+    Cipher Brewing: enter the four-letter word revealed by the puzzle
+  </h1>
 
   <div class="brandmark">CIPHER BREWING</div>
+  <div class="prompt">you solved it.<br>now say the word.</div>
 
-  <div class="prompt">
-    SOME THINGS ARE NOT FOUND.<br>
-    THEY ARE UNLOCKED.
-  </div>
-
-  <form id="password-form" autocomplete="off">
-
-    <div id="dots" aria-hidden="true">
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
+  <div id="pwwrap">
+    <div id="dots">
+      <span class="slot"></span>
+      <span class="slot"></span>
+      <span class="slot"></span>
+      <span class="slot"></span>
     </div>
-
-    <label for="pw" class="prompt">
-      ENTER THE FOUR-LETTER KEY
-    </label>
 
     <input
       id="pw"
-      name="password"
-      type="password"
+      type="text"
       maxlength="4"
-      minlength="4"
       autocomplete="off"
-      autocapitalize="none"
-      spellcheck="false"
-      aria-label="Enter the four-letter key"
-      required
-    >
-
-    <button id="tap" type="submit">
-      UNLOCK
-    </button>
-
-    <div id="msg" role="status" aria-live="polite">
-      FOUR LETTERS. ONE WAY IN.
-    </div>
-
-  </form>
-
-  <div class="gate-footer">
-    CIPHER BREWING · EST. IN CURIOSITY
+      autocapitalize="characters"
+      aria-label="Enter the four-letter password"
+    />
   </div>
 
-</main>
+  <button id="tap">type the word</button>
+  <div id="msg" role="status" aria-live="polite"></div>
+</div>
 
 <!-- REVEAL -->
 
-<section id="reveal" aria-label="Cipher Brewing reveal">
+<div id="reveal">
 
-  <div id="collage" aria-hidden="true">
-    <div class="ct"></div>
-    <div class="ct"></div>
-    <div class="ct"></div>
-    <div class="ct"></div>
-  </div>
+  <button id="sound" aria-label="Toggle sound">♪ sound on</button>
 
   <div id="beat">
-    <div id="beatword">CIPHER</div>
-    <div class="beat-label">
-      SOME PATTERNS ARE WORTH BREAKING
+    <div>
+      <div id="beatword">····</div>
+      <div class="beat-label">DECODING</div>
     </div>
   </div>
 
-  <article id="note">
+  <!-- Four factory photographs form a 2 × 2 collage -->
+  <div id="collage" aria-hidden="true">
+    <div class="ct">
+      <img src="factory-1.jpg" alt="">
+    </div>
+    <div class="ct">
+      <img src="factory-2.jpg" alt="">
+    </div>
+    <div class="ct">
+      <img src="factory-3.jpg" alt="">
+    </div>
+    <div class="ct">
+      <img src="factory-4.jpg" alt="">
+    </div>
+  </div>
 
+  <!-- LETTER: original text retained -->
+
+  <div id="note">
     <div class="brandmark">CIPHER BREWING</div>
 
     <div class="letter">
-
-      <p>A little thank you from us.</p>
-
       <p>
-        When we started Cipher, we had a lot of ideas, a lot of things we wanted to build and no real way of knowing where it would all lead.
-      </p>
-       <p>
-Today, seeing something we make in our factory find its way to your brew bar is a feeling we still find hard to put into words.      </p>
-      <p>
-        Every order, every message and every time you recommend us to another coffee person, it means more than you probably realise. We know there are plenty of choices out there. The fact that you chose us and trusted us to be a part of your coffee ritual is something we will never take for granted.
+        When we decided to launch our first coffee, we knew it had to be
+        something special. We roasted it with one goal - to preserve its
+        complexity and let its unique character shine. It’s a coffee we
+        genuinely love drinking and we’re proud to share it as our very
+        first release.
       </p>
 
-      <p>
-        This little puzzle was our way of adding something extra to your box. A small reminder that behind every product, there's a team putting in the hours, figuring things out and caring a little too much about getting things right.
-      </p>
+      <p class="sign">—Team Cipher Brewing</p>
+      <p class="sign"></p>
 
       <p>
-       Thank you for letting the things we make become a part of your world. From our factory to your brew bar, we're grateful for every single one of you who has made this journey possible.
+        These beans grew from seeds my grandfather planted, cared for by
+        the same family year after year. They carry the sweetness of hard
+        work, the freshness of mountain air, and a quiet hope that this
+        coffee brings a moment of warmth and joy into your day.
       </p>
 
-      <p class="sign">We're just getting started.</p>
-      <p class="sign-sub"> With love and gratitude,
-        </p>
-      <div class="Letter">
-        CIPHER BREWING
+      <p class="sign">—Darshan Ashok (Ammikulavi Estate)</p>
+
+      <!-- CONTACT FORM -->
+
+      <div class="contact">
+        <div class="contact-head">A note back means everything</div>
+
+        <div class="contact-note">
+          We’re a small team, which means every message lands directly with
+          us. Tell us what you tasted, what stood out or what you’d change.
+          We read it all and it genuinely helps us make better coffee.
+        </div>
+
+        <div class="contact-head">
+          Also, we might have something for you.
+        </div>
+
+        <form id="contactForm">
+          <div class="field">
+            <label for="cName">your name</label>
+            <input
+              id="cName"
+              name="name"
+              type="text"
+              placeholder="what should we call you"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="cEmail">your email</label>
+            <input
+              id="cEmail"
+              name="email"
+              type="email"
+              placeholder="so we can write back"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="cMessage">message</label>
+            <textarea
+              id="cMessage"
+              name="message"
+              placeholder="tell us anything — what you tasted, what you felt, what you're thinking"
+              required
+            ></textarea>
+          </div>
+
+          <input
+            type="checkbox"
+            name="botcheck"
+            tabindex="-1"
+            style="display:none"
+            aria-hidden="true"
+          />
+
+          <button id="send" type="submit">send it our way</button>
+
+          <div class="contact-tease">
+            By clicking Submit, you agree to share your information with us
+            and consent to receiving emails and other communications about
+            offers, updates, and news from Cipher Brewing.
+          </div>
+
+          <div id="formMsg" role="status" aria-live="polite"></div>
+        </form>
       </div>
+    </div>
+  </div>
+</div>
 
-  
-
-  </article>
-
-</section>
+<!-- BACKGROUND MUSIC -->
+<audio id="music" loop preload="none">
+  <source src="near-light.mp3" type="audio/mpeg" />
+</audio>
 
 <script>
-"use strict";
+(function () {
 
-/*
-  CIPHER BREWING PASSWORD GATE
+  /* CONFIGURATION */
 
-  Password: rift
-  Algorithm: SHA-256
+  var ANSWER_HASH =
+    "65a8400e6187c90bfb5048c22533a9e58f6afe8c816f58aa3f82c1ecb00c57f3";
 
-  The hash below is the correct SHA-256 digest
-  of the lowercase password "rift".
-*/
+  var WORD_ENC = [119, 134, 127, 124];
 
-const EXPECTED_HASH =
-  "168ee09f96df4c38849d14d6b72b238995289c6014d8602d1c0b71f0db58c429";
+  var REORDER_URL = "#";
 
-const form = document.getElementById("password-form");
-const passwordInput = document.getElementById("pw");
-const button = document.getElementById("tap");
-const message = document.getElementById("msg");
-const dots = document.getElementById("dots");
-const slots = document.querySelectorAll(".slot");
+  var WEB3FORMS_KEY =
+    "e2d8e9cc-e99d-4fbf-a449-0fd3b7de5d0c";
 
-const MAX_ATTEMPTS = 3;
-const LOCKOUT_MS = 15000;
-
-let failedAttempts = 0;
-let lockedUntil = 0;
-let isVerifying = false;
-let lockoutTimer = null;
-
-/* SHA-256 HASHING */
-
-async function sha256(text) {
-  if (!window.crypto || !window.crypto.subtle) {
-    throw new Error("Web Crypto API is unavailable.");
+  function decodeWord() {
+    return WORD_ENC.map(function (n) {
+      return String.fromCharCode(n - 17);
+    }).join("");
   }
 
-  const bytes = new TextEncoder().encode(text);
+  function sha256Hex(str) {
+    var bytes = new TextEncoder().encode(str);
 
-  const digest = await window.crypto.subtle.digest(
-    "SHA-256",
-    bytes
-  );
+    return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+      var arr = Array.prototype.slice.call(new Uint8Array(buf));
 
-  return Array.from(new Uint8Array(digest))
-    .map(byte => byte.toString(16).padStart(2, "0"))
-    .join("");
-}
+      return arr.map(function (b) {
+        return ("0" + b.toString(16)).slice(-2);
+      }).join("");
+    });
+  }
 
-/* INTERFACE */
+  var pw = document.getElementById("pw");
+  var slots = document.querySelectorAll(".slot");
+  var tap = document.getElementById("tap");
+  var msg = document.getElementById("msg");
+  var gate = document.getElementById("gate");
+  var reveal = document.getElementById("reveal");
+  var beat = document.getElementById("beat");
+  var beatword = document.getElementById("beatword");
+  var note = document.getElementById("note");
+  var music = document.getElementById("music");
+  var soundBtn = document.getElementById("sound");
 
-function setMessage(text, type = "") {
-  message.textContent = text;
-  message.className = type;
-}
-
-function updateSlots() {
-  const value = passwordInput.value;
-
-  slots.forEach((slot, index) => {
-    slot.textContent = value[index] ? "•" : "";
-
-    slot.style.borderColor = value[index]
-      ? "var(--amber)"
-      : "";
+  tap.addEventListener("click", function () {
+    pw.focus();
   });
-}
 
-function showReveal() {
-  const gate = document.getElementById("gate");
-  const reveal = document.getElementById("reveal");
-  const beat = document.getElementById("beat");
-  const note = document.getElementById("note");
+  gate.addEventListener("click", function () {
+    pw.focus();
+  });
 
-  gate.style.opacity = "0";
+  setTimeout(function () {
+    pw.focus();
+  }, 300);
 
-  window.setTimeout(() => {
-    gate.style.display = "none";
-    reveal.style.display = "block";
+  function render() {
+    var v = pw.value.toUpperCase().replace(/[^A-Z]/g, "");
+    pw.value = v;
 
-    window.setTimeout(() => {
-      beat.style.opacity = "0";
-
-      window.setTimeout(() => {
-        beat.style.display = "none";
-        note.style.opacity = "1";
-      }, 1000);
-
-    }, 1300);
-
-  }, 800);
-}
-
-/* TEMPORARY ATTEMPT DELAY */
-
-function startLockout() {
-  lockedUntil = Date.now() + LOCKOUT_MS;
-  failedAttempts = 0;
-  button.disabled = true;
-
-  if (lockoutTimer) {
-    clearInterval(lockoutTimer);
-  }
-
-  function updateCountdown() {
-    const remaining = Math.ceil(
-      (lockedUntil - Date.now()) / 1000
-    );
-
-    if (remaining <= 0) {
-      clearInterval(lockoutTimer);
-      lockoutTimer = null;
-      lockedUntil = 0;
-      button.disabled = false;
-
-      setMessage("YOU MAY TRY AGAIN.");
-      passwordInput.focus();
-
-      return;
+    for (var i = 0; i < 4; i++) {
+      slots[i].textContent = v[i] || "";
+      slots[i].style.borderBottomColor = v[i]
+        ? "var(--amber)"
+        : "var(--line)";
     }
-
-    setMessage(
-      `TOO MANY ATTEMPTS. WAIT ${remaining} SECONDS.`,
-      "error"
-    );
   }
 
-  updateCountdown();
-  lockoutTimer = setInterval(updateCountdown, 250);
-}
+  function openReveal() {
+    gate.style.opacity = "0";
 
-/* PASSWORD VERIFICATION */
-
-form.addEventListener("submit", async event => {
-  event.preventDefault();
-
-  if (isVerifying) return;
-
-  if (Date.now() < lockedUntil) {
-    const remaining = Math.ceil(
-      (lockedUntil - Date.now()) / 1000
-    );
-
-    setMessage(
-      `PLEASE WAIT ${remaining} SECONDS.`,
-      "error"
-    );
-
-    return;
+    setTimeout(function () {
+      gate.style.display = "none";
+      reveal.style.display = "block";
+      runBeat();
+      tryPlay();
+    }, 800);
   }
 
-  const password = passwordInput.value;
+  function fail() {
+    msg.textContent = "not the word.";
+    msg.style.color = "var(--err)";
 
-  if (password.length !== 4) {
-    setMessage("ENTER ALL FOUR LETTERS.", "error");
-    passwordInput.focus();
-    return;
+    gate.style.transform = "translateX(-4px)";
+
+    setTimeout(function () {
+      gate.style.transform = "translateX(4px)";
+    }, 60);
+
+    setTimeout(function () {
+      gate.style.transform = "translateX(0)";
+    }, 120);
+
+    setTimeout(function () {
+      pw.value = "";
+      render();
+      msg.textContent = "";
+    }, 1100);
   }
 
-  isVerifying = true;
-  button.disabled = true;
+  function submit() {
+    var v = pw.value.toUpperCase().replace(/[^A-Z]/g, "");
 
-  setMessage("VERIFYING...");
+    if (v.length < 4) return;
 
-  try {
-    const enteredHash = await sha256(password);
+    sha256Hex(v).then(function (h) {
+      if (h === ANSWER_HASH) {
+        msg.textContent = "welcome in.";
+        msg.style.color = "var(--amber)";
 
-    if (enteredHash === EXPECTED_HASH) {
-      setMessage("ACCESS GRANTED.", "success");
+        slots.forEach(function (s) {
+          s.style.borderBottomColor = "var(--amber)";
+        });
 
-      passwordInput.value = "";
-      updateSlots();
+        setTimeout(openReveal, 700);
+      } else {
+        fail();
+      }
+    });
+  }
 
-      showReveal();
-      return;
+  pw.addEventListener("input", function () {
+    render();
+
+    if (pw.value.replace(/[^A-Za-z]/g, "").length === 4) {
+      setTimeout(submit, 220);
     }
+  });
 
-    failedAttempts++;
+  /* DECODING ANIMATION */
 
-    passwordInput.value = "";
-    updateSlots();
+  function runBeat() {
+    var word = decodeWord();
+    var dots = new Array(word.length + 1).join("·");
+    var seq = [dots];
 
-    if (failedAttempts >= MAX_ATTEMPTS) {
-      startLockout();
-    } else {
-      const remaining = MAX_ATTEMPTS - failedAttempts;
-
-      setMessage(
-        `NOT QUITE. ${remaining} ATTEMPT${remaining === 1 ? "" : "S"} REMAINING.`,
-        "error"
+    for (var k = 1; k <= word.length; k++) {
+      seq.push(
+        word.slice(0, k) +
+        new Array(word.length - k + 1).join("·")
       );
     }
 
-  } catch (error) {
-    console.error("Verification error:", error);
+    var slot = document.getElementById("theWord");
 
-    setMessage(
-      "VERIFICATION UNAVAILABLE. PLEASE TRY AGAIN.",
-      "error"
-    );
-
-  } finally {
-    isVerifying = false;
-
-    if (Date.now() >= lockedUntil) {
-      button.disabled = false;
+    if (slot) {
+      slot.textContent = word;
     }
 
-    if (document.getElementById("reveal").style.display !== "block") {
-      passwordInput.focus();
+    var i = 0;
+
+    var iv = setInterval(function () {
+      i++;
+
+      if (i < seq.length) {
+        beatword.textContent = seq[i];
+      } else {
+        clearInterval(iv);
+
+        setTimeout(function () {
+          beat.style.transition = "opacity 1s";
+          beat.style.opacity = "0";
+
+          setTimeout(function () {
+            beat.style.display = "none";
+            note.style.opacity = "1";
+          }, 1000);
+
+        }, 500);
+      }
+    }, 480);
+  }
+
+  /* HIDDEN REORDER LINK */
+
+  var hidden = document.getElementById("hidden");
+  var decoded = document.getElementById("decoded");
+
+  if (hidden && decoded) {
+    hidden.addEventListener("click", function () {
+      hidden.style.color = "#7a6a4a";
+      decoded.innerHTML =
+        '<a href="' + REORDER_URL + '">brew again. →</a>';
+    });
+  }
+
+  /* CONTACT FORM */
+
+  var contactForm = document.getElementById("contactForm");
+  var sendBtn = document.getElementById("send");
+  var formMsg = document.getElementById("formMsg");
+
+  contactForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    var name = document.getElementById("cName").value.trim();
+    var email = document.getElementById("cEmail").value.trim();
+    var message = document.getElementById("cMessage").value.trim();
+
+    if (!name || !email || !message) {
+      formMsg.textContent = "fill all three.";
+      formMsg.style.color = "var(--err)";
+      return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = "sending…";
+    formMsg.textContent = "";
+
+    var payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: "New message from Cipher Brewing",
+      from_name: "Cipher Brewing site",
+      name: name,
+      email: email,
+      message: message,
+      botcheck: contactForm.botcheck.checked
+    };
+
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        if (data.success) {
+          contactForm.reset();
+
+          formMsg.textContent =
+            "got it. truly — thank you. we read every word.";
+
+          formMsg.style.color = "var(--amber)";
+          sendBtn.textContent = "sent";
+        } else {
+          formMsg.textContent = "something broke. try again.";
+          formMsg.style.color = "var(--err)";
+          sendBtn.disabled = false;
+          sendBtn.textContent = "send it our way";
+        }
+      })
+      .catch(function () {
+        formMsg.textContent = "no connection. try again.";
+        formMsg.style.color = "var(--err)";
+        sendBtn.disabled = false;
+        sendBtn.textContent = "send it our way";
+      });
+  });
+
+  /* BACKGROUND MUSIC */
+
+  var soundOn = true;
+
+  function tryPlay() {
+    if (!soundOn) return;
+
+    var p = music.play();
+
+    if (p && p.catch) {
+      p.catch(function () {});
     }
   }
-});
 
-/* INPUT HANDLING */
+  soundBtn.addEventListener("click", function () {
+    soundOn = !soundOn;
 
-passwordInput.addEventListener("input", () => {
-  passwordInput.value = passwordInput.value
-    .replace(/[^a-zA-Z]/g, "")
-    .toLowerCase()
-    .slice(0, 4);
+    if (soundOn) {
+      music.play().catch(function () {});
+      soundBtn.textContent = "♪ sound on";
+    } else {
+      music.pause();
+      soundBtn.textContent = "♪ sound off";
+    }
+  });
 
-  updateSlots();
-
-  if (passwordInput.value.length > 0) {
-    dots.classList.add("active");
-  } else {
-    dots.classList.remove("active");
-  }
-});
-
-passwordInput.addEventListener("focus", () => {
-  dots.classList.add("active");
-});
-
-passwordInput.addEventListener("blur", () => {
-  if (!passwordInput.value) {
-    dots.classList.remove("active");
-  }
-});
-
-dots.addEventListener("click", () => {
-  passwordInput.focus();
-});
-
-document.getElementById("gate").addEventListener("click", event => {
-  if (
-    event.target.closest("#tap") ||
-    event.target.closest("#pw")
-  ) {
-    return;
-  }
-
-  passwordInput.focus();
-});
-
-/* INITIAL STATE */
-
-updateSlots();
+})();
 </script>
 
 </body>
 </html>
-```
