@@ -187,13 +187,15 @@ pointer-events: none;
 }
 
 #collage .ct {
-background: radial-gradient(
-ellipse at center,
-#333 0%,
-#111 70%
-);
-border: 1px solid #171717;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid #171717;
 }
+
+#collage .ct:nth-child(1) { background-image: url("images/photo1.jpg"); }
+#collage .ct:nth-child(2) { background-image: url("images/photo2.jpg"); }
+#collage .ct:nth-child(3) { background-image: url("images/photo3.jpg"); }
+#collage .ct:nth-child(4) { background-image: url("images/photo4.jpg"); }
 
 #collage::after {
 content: "";
