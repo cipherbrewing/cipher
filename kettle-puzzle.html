@@ -8,182 +8,164 @@
 
 <style>
 :root {
---bg: #0a0a0a;
---ink: #cfcfcf;
---ink-dim: #8a8a8a;
---ink-faint: #5a5a5a;
---line: #333;
---line-soft: #222;
---amber: #c9a26a;
---err: #bd7777;
---mono: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+  --bg: #0a0a0a;
+  --ink: #cfcfcf;
+  --ink-dim: #8a8a8a;
+  --ink-faint: #5a5a5a;
+  --line: #333;
+  --line-soft: #222;
+  --amber: #c9a26a;
+  --err: #bd7777;
+  --mono: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
 }
 
-* {
-box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
-margin: 0;
-padding: 0;
-min-height: 100%;
-}
+html, body { margin: 0; padding: 0; min-height: 100%; }
 
 body {
-background: var(--bg);
-color: var(--ink);
-font-family: var(--mono);
--webkit-font-smoothing: antialiased;
-min-height: 100vh;
-min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* PASSWORD GATE */
 
 #gate {
-width: 100%;
-max-width: 420px;
-min-height: 100vh;
-min-height: 100dvh;
-margin: 0 auto;
-padding: 2rem 1.2rem;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-text-align: center;
-position: relative;
-transition: opacity 0.8s ease;
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: opacity 0.8s ease;
 }
 
 .brandmark {
-font-size: 12px;
-letter-spacing: 0.4em;
-color: var(--ink-faint);
-margin-bottom: 2.4rem;
-text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: var(--ink-faint);
+  margin-bottom: 2.4rem;
+  text-transform: uppercase;
 }
 
 .prompt {
-font-size: 13px;
-letter-spacing: 0.12em;
-color: var(--ink-dim);
-line-height: 1.9;
-margin-bottom: 2.2rem;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  line-height: 1.9;
+  margin-bottom: 2.2rem;
 }
 
 #password-form {
-width: 100%;
-display: flex;
-flex-direction: column;
-align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #dots {
-display: flex;
-gap: 14px;
-justify-content: center;
-margin-bottom: 2rem;
-cursor: text;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 2rem;
+  cursor: text;
 }
 
 .slot {
-width: 38px;
-height: 48px;
-border-bottom: 2px solid var(--line);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 24px;
-color: #e8e8e8;
-transition: border-color 0.3s;
+  width: 38px;
+  height: 48px;
+  border-bottom: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #e8e8e8;
+  transition: border-color 0.3s;
 }
 
-#dots.active .slot {
-border-color: var(--amber);
-}
+#dots.active .slot { border-color: var(--amber); }
 
 #pw {
-position: absolute;
-width: 1px;
-height: 1px;
-opacity: 0;
-pointer-events: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 #tap {
-background: transparent;
-border: 1px solid var(--line);
-color: var(--ink-dim);
-font-family: var(--mono);
-font-size: 12px;
-letter-spacing: 0.2em;
-padding: 12px 24px;
-border-radius: 8px;
-cursor: pointer;
-margin-bottom: 1.6rem;
-transition: border-color 0.3s, color 0.3s;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1.6rem;
+  transition: border-color 0.3s, color 0.3s;
 }
 
-#tap:hover,
-#tap:focus-visible {
-border-color: var(--amber);
-color: var(--ink);
+#tap:hover, #tap:focus-visible {
+  border-color: var(--amber);
+  color: var(--ink);
 }
 
-#tap:disabled {
-opacity: 0.5;
-cursor: not-allowed;
-}
+#tap:disabled { opacity: 0.5; cursor: not-allowed; }
 
 #msg {
-font-size: 11px;
-letter-spacing: 0.08em;
-color: var(--ink-faint);
-min-height: 32px;
-line-height: 1.7;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  min-height: 32px;
+  line-height: 1.7;
 }
 
-#msg.error {
-color: var(--err);
-}
-
-#msg.success {
-color: var(--amber);
-}
+#msg.error { color: var(--err); }
+#msg.success { color: var(--amber); }
 
 .gate-footer {
-position: absolute;
-bottom: 22px;
-color: #353535;
-font-size: 9px;
-letter-spacing: 0.2em;
-text-align: center;
-width: calc(100% - 40px);
+  position: absolute;
+  bottom: 22px;
+  color: #353535;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-align: center;
+  width: calc(100% - 40px);
 }
 
 /* REVEAL */
 
 #reveal {
-display: none;
-position: fixed;
-inset: 0;
-background: var(--bg);
-overflow-y: auto;
-isolation: isolate;
-padding: 3rem 1.6rem;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  isolation: isolate;
+  padding: 3rem 1.6rem;
 }
 
 #collage {
-position: fixed;
-inset: 0;
-z-index: -1;
-display: grid;
-grid-template-columns: 1fr 1fr;
-grid-template-rows: 1fr 1fr;
-opacity: 0.25;
-pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  opacity: 0.25;
+  pointer-events: none;
 }
 
 #collage .ct {
@@ -198,176 +180,180 @@ pointer-events: none;
 #collage .ct:nth-child(4) { background-image: url("photo4.jpeg"); }
 
 #collage::after {
-content: "";
-position: absolute;
-inset: 0;
-background: radial-gradient(
-ellipse at center,
-rgba(10, 10, 10, 0.2) 0%,
-rgba(10, 10, 10, 0.5) 100%
-);
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 10, 10, 0.2) 0%,
+    rgba(10, 10, 10, 0.5) 100%
+  );
 }
 
 #beat {
-position: fixed;
-inset: 0;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-background: var(--bg);
-z-index: 5;
-transition: opacity 1s ease;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 1s ease;
 }
 
 #beatword {
-font-size: 24px;
-letter-spacing: 0.5em;
-padding-left: 0.5em;
-color: var(--amber);
+  font-size: 24px;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  color: var(--amber);
 }
 
 .beat-label {
-font-size: 10px;
-letter-spacing: 0.3em;
-color: #4a4a4a;
-margin-top: 1.4rem;
-text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #4a4a4a;
+  margin-top: 1.4rem;
+  text-align: center;
 }
 
 #note {
-opacity: 0;
-transition: opacity 1.4s ease;
-max-width: 520px;
-margin: 0 auto;
-position: relative;
-z-index: 2;
-padding-bottom: 3rem;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 3rem;
 }
 
-#note .brandmark {
-text-align: center;
-margin-bottom: 2.6rem;
-}
+#note .brandmark { text-align: center; margin-bottom: 2.6rem; }
 
 .letter {
-font-size: 13px;
-line-height: 2.1;
-color: var(--ink);
-letter-spacing: 0.025em;
+  font-size: 13px;
+  line-height: 2.1;
+  color: var(--ink);
+  letter-spacing: 0.025em;
 }
 
-.letter p {
-margin: 0 0 1.4rem;
+.letter p { margin: 0 0 1.4rem; }
+
+.sign { color: var(--ink-dim); }
+
+/* SURVEY */
+
+.survey {
+  margin-top: 2.8rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--line-soft);
 }
 
-.word {
-color: var(--amber);
+.survey-intro p {
+  font-size: 13px;
+  line-height: 2;
+  color: var(--ink-dim);
+  margin: 0 0 1.2rem;
 }
 
-.sign {
-color: var(--ink-dim);
-margin-bottom: 0.4rem !important;
+.field-line { margin-bottom: 1.6rem; }
+
+.field-line label,
+.field-box label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin-bottom: 0.6rem;
 }
 
-.sign-sub {
-color: var(--ink-faint);
-font-size: 11px;
-letter-spacing: 0.06em;
-margin: 0;
+.optional { opacity: 0.7; }
+
+.field-line input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 8px 2px;
+  outline: none;
+  transition: border-color 0.3s;
 }
 
-/* CONTACT */
+.field-line input:focus { border-bottom-color: var(--amber); }
+.field-line input::placeholder,
+.field-box textarea::placeholder { color: #3a3a3a; }
 
-.contact {
-margin-top: 2.8rem;
-padding-top: 1.8rem;
-border-top: 1px solid var(--line-soft);
+.field-box { margin-bottom: 1.6rem; }
+
+.field-box textarea {
+  width: 100%;
+  min-height: 90px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 12px;
+  border-radius: 6px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
 }
 
-.contact-label {
-font-size: 10px;
-letter-spacing: 0.2em;
-color: var(--ink-faint);
-margin-bottom: 1.4rem;
-text-align: center;
+.field-box textarea:focus { border-color: var(--amber); }
+
+#sSend {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
 }
 
-.contact-head {
-font-size: 15px;
-letter-spacing: 0.04em;
-line-height: 1.8;
-color: var(--ink);
-text-align: center;
-margin-bottom: 1.4rem;
+#sSend:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+#sSend:disabled { opacity: 0.5; cursor: default; }
+
+#sMsg {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+  min-height: 18px;
+  margin-top: 1rem;
+  text-align: center;
 }
 
-.contact-copy {
-font-size: 12px;
-line-height: 2;
-color: var(--ink-dim);
-text-align: center;
-margin-bottom: 1.5rem;
-}
-
-.contact-link {
-display: block;
-width: fit-content;
-margin: 0 auto;
-color: var(--amber);
-text-decoration: none;
-font-size: 11px;
-letter-spacing: 0.1em;
-border-bottom: 1px solid #655238;
-padding-bottom: 5px;
-}
-
-.contact-link:hover,
-.contact-link:focus-visible {
-color: #f0d2a0;
-border-color: var(--amber);
-}
+#sMsg.error { color: var(--err); }
 
 .bottom-note {
-text-align: center;
-margin-top: 3rem;
-color: #414141;
-font-size: 9px;
-letter-spacing: 0.2em;
+  text-align: center;
+  margin-top: 3rem;
+  color: #414141;
+  font-size: 9px;
+  letter-spacing: 0.2em;
 }
-
-/* RESPONSIVE */
 
 @media (max-width: 480px) {
-#reveal {
-padding: 2.5rem 1.25rem;
-}
-
-#dots {
-gap: 10px;
-}
-
-.slot {
-width: 34px;
-height: 44px;
-}
-
-.letter {
-font-size: 12px;
-}
-
-#beatword {
-font-size: 20px;
-}
+  #reveal { padding: 2.5rem 1.25rem; }
+  #dots { gap: 10px; }
+  .slot { width: 34px; height: 44px; }
+  .letter { font-size: 12px; }
+  #beatword { font-size: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-*,
-*::before,
-*::after {
-transition-duration: 0.01ms !important;
-animation-duration: 0.01ms !important;
-}
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
 </style>
 </head>
@@ -378,52 +364,44 @@ animation-duration: 0.01ms !important;
 
 <main id="gate">
 
-<div class="brandmark">CIPHER BREWING</div>
+  <div class="brandmark">CIPHER BREWING</div>
 
-<div class="prompt">
-SOME THINGS ARE NOT FOUND.<br>
-THEY ARE UNLOCKED.
-</div>
+  <div class="prompt">
+    SOME THINGS ARE NOT FOUND.<br>
+    THEY ARE UNLOCKED.
+  </div>
 
-<form id="password-form" autocomplete="off">
+  <form id="password-form" autocomplete="off">
 
-<div id="dots" aria-hidden="true">
-<div class="slot"></div>
-<div class="slot"></div>
-<div class="slot"></div>
-<div class="slot"></div>
-</div>
+    <div id="dots" aria-hidden="true">
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+    </div>
 
-<label for="pw" class="prompt">
-ENTER THE FOUR-LETTER KEY
-</label>
+    <label for="pw" class="prompt">ENTER THE FOUR-LETTER KEY</label>
 
-<input
-id="pw"
-name="password"
-type="password"
-maxlength="4"
-minlength="4"
-autocomplete="off"
-autocapitalize="none"
-spellcheck="false"
-aria-label="Enter the four-letter key"
-required
->
+    <input
+      id="pw"
+      name="password"
+      type="password"
+      maxlength="4"
+      minlength="4"
+      autocomplete="off"
+      autocapitalize="none"
+      spellcheck="false"
+      aria-label="Enter the four-letter key"
+      required
+    >
 
-<button id="tap" type="submit">
-UNLOCK
-</button>
+    <button id="tap" type="submit">UNLOCK</button>
 
-<div id="msg" role="status" aria-live="polite">
-FOUR LETTERS. ONE WAY IN.
-</div>
+    <div id="msg" role="status" aria-live="polite">FOUR LETTERS. ONE WAY IN.</div>
 
-</form>
+  </form>
 
-<div class="gate-footer">
-CIPHER BREWING · EST. IN CURIOSITY
-</div>
+  <div class="gate-footer">CIPHER BREWING · EST. IN CURIOSITY</div>
 
 </main>
 
@@ -431,61 +409,85 @@ CIPHER BREWING · EST. IN CURIOSITY
 
 <section id="reveal" aria-label="Cipher Brewing reveal">
 
-<div id="collage" aria-hidden="true">
-<div class="ct"></div>
-<div class="ct"></div>
-<div class="ct"></div>
-<div class="ct"></div>
-</div>
+  <div id="collage" aria-hidden="true">
+    <div class="ct"></div>
+    <div class="ct"></div>
+    <div class="ct"></div>
+    <div class="ct"></div>
+  </div>
 
-<div id="beat">
-<div id="beatword">CIPHER</div>
-<div class="beat-label">
-SOME PATTERNS ARE WORTH BREAKING
-</div>
-</div>
+  <div id="beat">
+    <div id="beatword">CIPHER</div>
+    <div class="beat-label">SOME PATTERNS ARE WORTH BREAKING</div>
+  </div>
 
-<article id="note">
+  <article id="note">
 
-<div class="brandmark">CIPHER BREWING</div>
+    <div class="brandmark">CIPHER BREWING</div>
 
-<div class="letter">
+    <div class="letter">
 
-<p>A little thank you from us.</p>
+      <p>A little thank you from us.</p>
 
-<p>
-When we started Cipher, we had a lot of ideas, a lot of things we wanted to build and no real way of knowing where it would all lead.
-</p>
-<p>
-Today, seeing something we make in our factory find its way to your brew bar is a feeling we still find hard to put into words.      </p>
-<p>
-Every order, every message and every time you recommend us to another coffee person, it means more than you probably realise. We know there are plenty of choices out there. The fact that you chose us and trusted us to be a part of your coffee ritual is something we will never take for granted.
-</p>
+      <p>When we started Cipher, we had a lot of ideas, a lot of things we wanted to build and no real way of knowing where it would all lead.</p>
 
-<p>
-This little puzzle was our way of adding something extra to your box. A small reminder that behind every product, there's a team putting in the hours, figuring things out and caring a little too much about getting things right.
-</p>
+      <p>Today, seeing something we make in our factory find its way to your brew bar is a feeling we still find hard to put into words.</p>
 
-<p>
-Thank you for letting the things we make become a part of your world. From our factory to your brew bar, we're grateful for every single one of you who has made this journey possible.
-</p>
+      <p>Every order, every message and every time you recommend us to another coffee person, it means more than you probably realise. We know there are plenty of choices out there. The fact that you chose us and trusted us to be a part of your coffee ritual is something we will never take for granted.</p>
 
-<p>
-We're just getting started.</p>
+      <p>This little puzzle was our way of adding something extra to your box. A small reminder that behind every product, there's a team putting in the hours, figuring things out and caring a little too much about getting things right.</p>
 
+      <p>Thank you for letting the things we make become a part of your world. From our factory to your brew bar, we're grateful for every single one of you who has made this journey possible.</p>
 
-<p>With love and gratitude,<p>
-   <p>CIPHER BREWING</p>
+      <p>We're just getting started.</p>
 
-</div>
+      <p class="sign">With love and gratitude,<br>CIPHER BREWING</p>
 
-<section class="contact"></section>
+    </div>
 
-<div class="bottom-note">
-END OF THIS CHAPTER · NOT THE STORY
-</div>
+    <section class="survey">
 
-</article>
+      <div class="survey-intro">
+        <p>This one started with a simple itch, and we've been chasing it ever since. Cipher is still growing, one small step at a time, and every batch teaches us something new.</p>
+        <p>You've been part of this with us. Your side of the story is the one we're missing. Thank you for being in it with us.</p>
+      </div>
+
+      <form id="surveyForm" novalidate>
+
+        <div class="field-line">
+          <label for="sName">name</label>
+          <input id="sName" name="name" type="text" placeholder="what should we call you?" autocomplete="given-name" required>
+        </div>
+
+        <div class="field-line">
+          <label for="sEmail">email <span class="optional">(optional)</span></label>
+          <input id="sEmail" name="email" type="email" placeholder="if you'd like us to write back" autocomplete="email">
+        </div>
+
+        <div class="field-box">
+          <textarea id="sOpen" name="open" placeholder="whatever's on your mind"></textarea>
+        </div>
+
+        <div class="field-box">
+          <label for="sFuture">what would you like cipher to do in the future?</label>
+          <textarea id="sFuture" name="future"></textarea>
+        </div>
+
+        <div class="field-box">
+          <label for="sPuzzle">what are your thoughts on the puzzle?</label>
+          <textarea id="sPuzzle" name="puzzle"></textarea>
+        </div>
+
+        <button id="sSend" type="submit">send it to us</button>
+        <p id="sMsg" role="status" aria-live="polite"></p>
+
+      </form>
+
+    </section>
+
+    <div class="bottom-note">END OF THIS CHAPTER · NOT THE STORY</div>
+
+  </article>
 
 </section>
 
@@ -493,17 +495,15 @@ END OF THIS CHAPTER · NOT THE STORY
 "use strict";
 
 /*
- CIPHER BREWING PASSWORD GATE
-
- Password: rift
- Algorithm: SHA-256
-
- The hash below is the correct SHA-256 digest
- of the lowercase password "rift".
+  The gate stores only a salted PBKDF2 digest, not the key itself.
+  Verification runs in the browser using the Web Crypto API.
 */
 
-const EXPECTED_HASH =
-"168ee09f96df4c38849d14d6b72b238995289c6014d8602d1c0b71f0db58c429";
+const GATE_SALT_HEX = "68626e66a27f75e3ffdb55a477c732a0";
+const GATE_DIGEST_HEX = "e72f80e43736c69d55d933e5aff686f5ec71773b4637137686d85c4b36b49727";
+const GATE_ITERATIONS = 600000;
+
+const WEB3FORMS_KEY = "e2d8e9cc-e99d-4fbf-a449-0fd3b7de5d0c";
 
 const form = document.getElementById("password-form");
 const passwordInput = document.getElementById("pw");
@@ -520,237 +520,266 @@ let lockedUntil = 0;
 let isVerifying = false;
 let lockoutTimer = null;
 
-/* SHA-256 HASHING */
-
-async function sha256(text) {
-if (!window.crypto || !window.crypto.subtle) {
-throw new Error("Web Crypto API is unavailable.");
+function hexToBytes(hex) {
+  const out = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < out.length; i++) {
+    out[i] = parseInt(hex.substr(i * 2, 2), 16);
+  }
+  return out;
 }
 
-const bytes = new TextEncoder().encode(text);
-
-const digest = await window.crypto.subtle.digest(
-"SHA-256",
-bytes
-);
-
-return Array.from(new Uint8Array(digest))
-.map(byte => byte.toString(16).padStart(2, "0"))
-.join("");
+function bytesToHex(buffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-/* INTERFACE */
+async function deriveDigest(text) {
+  if (!window.crypto || !window.crypto.subtle) {
+    throw new Error("Web Crypto API is unavailable.");
+  }
+
+  const keyMaterial = await window.crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(text),
+    "PBKDF2",
+    false,
+    ["deriveBits"]
+  );
+
+  const bits = await window.crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: hexToBytes(GATE_SALT_HEX),
+      iterations: GATE_ITERATIONS,
+      hash: "SHA-256"
+    },
+    keyMaterial,
+    256
+  );
+
+  return bytesToHex(bits);
+}
 
 function setMessage(text, type = "") {
-message.textContent = text;
-message.className = type;
+  message.textContent = text;
+  message.className = type;
 }
 
 function updateSlots() {
-const value = passwordInput.value;
+  const value = passwordInput.value;
 
-slots.forEach((slot, index) => {
-slot.textContent = value[index] ? "•" : "";
-
-slot.style.borderColor = value[index]
-? "var(--amber)"
-: "";
-});
+  slots.forEach((slot, index) => {
+    slot.textContent = value[index] ? "•" : "";
+    slot.style.borderColor = value[index] ? "var(--amber)" : "";
+  });
 }
 
 function showReveal() {
-const gate = document.getElementById("gate");
-const reveal = document.getElementById("reveal");
-const beat = document.getElementById("beat");
-const note = document.getElementById("note");
+  const gate = document.getElementById("gate");
+  const reveal = document.getElementById("reveal");
+  const beat = document.getElementById("beat");
+  const note = document.getElementById("note");
 
-gate.style.opacity = "0";
+  gate.style.opacity = "0";
 
-window.setTimeout(() => {
-gate.style.display = "none";
-reveal.style.display = "block";
+  window.setTimeout(() => {
+    gate.style.display = "none";
+    reveal.style.display = "block";
 
-window.setTimeout(() => {
-beat.style.opacity = "0";
+    window.setTimeout(() => {
+      beat.style.opacity = "0";
 
-window.setTimeout(() => {
-beat.style.display = "none";
-note.style.opacity = "1";
-}, 1000);
-
-}, 1300);
-
-}, 800);
+      window.setTimeout(() => {
+        beat.style.display = "none";
+        note.style.opacity = "1";
+      }, 1000);
+    }, 1300);
+  }, 800);
 }
-
-/* TEMPORARY ATTEMPT DELAY */
 
 function startLockout() {
-lockedUntil = Date.now() + LOCKOUT_MS;
-failedAttempts = 0;
-button.disabled = true;
+  lockedUntil = Date.now() + LOCKOUT_MS;
+  failedAttempts = 0;
+  button.disabled = true;
 
-if (lockoutTimer) {
-clearInterval(lockoutTimer);
+  if (lockoutTimer) clearInterval(lockoutTimer);
+
+  function updateCountdown() {
+    const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+
+    if (remaining <= 0) {
+      clearInterval(lockoutTimer);
+      lockoutTimer = null;
+      lockedUntil = 0;
+      button.disabled = false;
+      setMessage("YOU MAY TRY AGAIN.");
+      passwordInput.focus();
+      return;
+    }
+
+    setMessage(`TOO MANY ATTEMPTS. WAIT ${remaining} SECONDS.`, "error");
+  }
+
+  updateCountdown();
+  lockoutTimer = setInterval(updateCountdown, 250);
 }
-
-function updateCountdown() {
-const remaining = Math.ceil(
-(lockedUntil - Date.now()) / 1000
-);
-
-if (remaining <= 0) {
-clearInterval(lockoutTimer);
-lockoutTimer = null;
-lockedUntil = 0;
-button.disabled = false;
-
-setMessage("YOU MAY TRY AGAIN.");
-passwordInput.focus();
-
-return;
-}
-
-setMessage(
-`TOO MANY ATTEMPTS. WAIT ${remaining} SECONDS.`,
-"error"
-);
-}
-
-updateCountdown();
-lockoutTimer = setInterval(updateCountdown, 250);
-}
-
-/* PASSWORD VERIFICATION */
 
 form.addEventListener("submit", async event => {
-event.preventDefault();
+  event.preventDefault();
 
-if (isVerifying) return;
+  if (isVerifying) return;
 
-if (Date.now() < lockedUntil) {
-const remaining = Math.ceil(
-(lockedUntil - Date.now()) / 1000
-);
+  if (Date.now() < lockedUntil) {
+    const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+    setMessage(`PLEASE WAIT ${remaining} SECONDS.`, "error");
+    return;
+  }
 
-setMessage(
-`PLEASE WAIT ${remaining} SECONDS.`,
-"error"
-);
+  const password = passwordInput.value;
 
-return;
-}
+  if (password.length !== 4) {
+    setMessage("ENTER ALL FOUR LETTERS.", "error");
+    passwordInput.focus();
+    return;
+  }
 
-const password = passwordInput.value;
+  isVerifying = true;
+  button.disabled = true;
+  setMessage("VERIFYING...");
 
-if (password.length !== 4) {
-setMessage("ENTER ALL FOUR LETTERS.", "error");
-passwordInput.focus();
-return;
-}
+  try {
+    const digest = await deriveDigest(password);
 
-isVerifying = true;
-button.disabled = true;
+    if (digest === GATE_DIGEST_HEX) {
+      setMessage("ACCESS GRANTED.", "success");
+      passwordInput.value = "";
+      updateSlots();
+      showReveal();
+      return;
+    }
 
-setMessage("VERIFYING...");
+    failedAttempts++;
+    passwordInput.value = "";
+    updateSlots();
 
-try {
-const enteredHash = await sha256(password);
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      startLockout();
+    } else {
+      const remaining = MAX_ATTEMPTS - failedAttempts;
+      setMessage(
+        `NOT QUITE. ${remaining} ATTEMPT${remaining === 1 ? "" : "S"} REMAINING.`,
+        "error"
+      );
+    }
+  } catch (error) {
+    console.error("Verification error:", error);
+    setMessage("VERIFICATION UNAVAILABLE. PLEASE TRY AGAIN.", "error");
+  } finally {
+    isVerifying = false;
 
-if (enteredHash === EXPECTED_HASH) {
-setMessage("ACCESS GRANTED.", "success");
+    if (Date.now() >= lockedUntil) {
+      button.disabled = false;
+    }
 
-passwordInput.value = "";
-updateSlots();
-
-showReveal();
-return;
-}
-
-failedAttempts++;
-
-passwordInput.value = "";
-updateSlots();
-
-if (failedAttempts >= MAX_ATTEMPTS) {
-startLockout();
-} else {
-const remaining = MAX_ATTEMPTS - failedAttempts;
-
-setMessage(
-`NOT QUITE. ${remaining} ATTEMPT${remaining === 1 ? "" : "S"} REMAINING.`,
-"error"
-);
-}
-
-} catch (error) {
-console.error("Verification error:", error);
-
-setMessage(
-"VERIFICATION UNAVAILABLE. PLEASE TRY AGAIN.",
-"error"
-);
-
-} finally {
-isVerifying = false;
-
-if (Date.now() >= lockedUntil) {
-button.disabled = false;
-}
-
-if (document.getElementById("reveal").style.display !== "block") {
-passwordInput.focus();
-}
-}
+    if (document.getElementById("reveal").style.display !== "block") {
+      passwordInput.focus();
+    }
+  }
 });
-
-/* INPUT HANDLING */
 
 passwordInput.addEventListener("input", () => {
-passwordInput.value = passwordInput.value
-.replace(/[^a-zA-Z]/g, "")
-.toLowerCase()
-.slice(0, 4);
+  passwordInput.value = passwordInput.value
+    .replace(/[^a-zA-Z]/g, "")
+    .toLowerCase()
+    .slice(0, 4);
 
-updateSlots();
-
-if (passwordInput.value.length > 0) {
-dots.classList.add("active");
-} else {
-dots.classList.remove("active");
-}
+  updateSlots();
+  dots.classList.toggle("active", passwordInput.value.length > 0);
 });
 
-passwordInput.addEventListener("focus", () => {
-dots.classList.add("active");
-});
+passwordInput.addEventListener("focus", () => dots.classList.add("active"));
 
 passwordInput.addEventListener("blur", () => {
-if (!passwordInput.value) {
-dots.classList.remove("active");
-}
+  if (!passwordInput.value) dots.classList.remove("active");
 });
 
-dots.addEventListener("click", () => {
-passwordInput.focus();
-});
+dots.addEventListener("click", () => passwordInput.focus());
 
 document.getElementById("gate").addEventListener("click", event => {
-if (
-event.target.closest("#tap") ||
-event.target.closest("#pw")
-) {
-return;
-}
-
-passwordInput.focus();
+  if (event.target.closest("#tap") || event.target.closest("#pw")) return;
+  passwordInput.focus();
 });
 
-/* INITIAL STATE */
+/* SURVEY */
+
+const surveyForm = document.getElementById("surveyForm");
+const sName = document.getElementById("sName");
+const sEmail = document.getElementById("sEmail");
+const sOpen = document.getElementById("sOpen");
+const sFuture = document.getElementById("sFuture");
+const sPuzzle = document.getElementById("sPuzzle");
+const sSend = document.getElementById("sSend");
+const sMsg = document.getElementById("sMsg");
+
+surveyForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const name = sName.value.trim();
+  const email = sEmail.value.trim();
+
+  if (!name) {
+    sMsg.textContent = "please tell us your name.";
+    sMsg.className = "error";
+    sName.focus();
+    return;
+  }
+
+  if (email && !sEmail.checkValidity()) {
+    sMsg.textContent = "that email doesn't look quite right.";
+    sMsg.className = "error";
+    sEmail.focus();
+    return;
+  }
+
+  sSend.disabled = true;
+  sMsg.className = "";
+  sMsg.textContent = "sending...";
+
+  try {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Cipher Brewing puzzle feedback",
+        name: name,
+        email: email,
+        open_thoughts: sOpen.value.trim(),
+        future_wishes: sFuture.value.trim(),
+        puzzle_thoughts: sPuzzle.value.trim()
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      sMsg.textContent = "received. thank you, " + name + ".";
+      surveyForm.reset();
+    } else {
+      throw new Error(data.message || "send failed");
+    }
+  } catch (err) {
+    console.error("Survey send failed:", err);
+    sMsg.textContent = "that didn't go through. please try again.";
+    sMsg.className = "error";
+  } finally {
+    sSend.disabled = false;
+  }
+});
 
 updateSlots();
 </script>
 
 </body>
 </html>
-```
