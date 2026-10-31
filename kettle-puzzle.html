@@ -190,6 +190,28 @@ body {
   );
 }
 
+#sound {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+#sound:hover, #sound:focus-visible {
+  color: var(--amber);
+  border-color: var(--amber);
+}
+
 #beat {
   position: fixed;
   inset: 0;
@@ -416,6 +438,9 @@ body {
     <div class="ct"></div>
   </div>
 
+  <audio id="bgm" src="abcd.mp3" loop preload="auto"></audio>
+  <button id="sound" type="button">SOUND ON</button>
+
   <div id="beat">
     <div id="beatword">CIPHER</div>
     <div class="beat-label">SOME PATTERNS ARE WORTH BREAKING</div>
@@ -441,15 +466,14 @@ body {
 
       <p>We're just getting started.</p>
 
-      <p>With love and gratitude</p>
-       <p>CIPHER BREWING</p>
+      <p class="sign">With love and gratitude,<br>CIPHER BREWING</p>
 
     </div>
 
     <section class="survey">
 
       <div class="survey-intro">
-        <p>This one started with a simple itch and we've been chasing it ever since. Cipher is still growing, one small step at a time and every batch teaches us something new.</p>
+        <p>This one started with a simple itch, and we've been chasing it ever since. Cipher is still growing, one small step at a time, and every batch teaches us something new.</p>
         <p>You've been part of this with us. Your side of the story is the one we're missing. Thank you for being in it with us.</p>
       </div>
 
@@ -483,10 +507,7 @@ body {
         <p id="sMsg" role="status" aria-live="polite"></p>
 
       </form>
- <div class="survey-intro">
-        <p>By clicking Submit, you agree to share your information with us and consent to receiving emails and other communications about offers, updates, and news from Cipher Brewing.</p>
-        
-      </div>
+
     </section>
 
     <div class="bottom-note">END OF THIS CHAPTER · NOT THE STORY</div>
@@ -515,6 +536,10 @@ const button = document.getElementById("tap");
 const message = document.getElementById("msg");
 const dots = document.getElementById("dots");
 const slots = document.querySelectorAll(".slot");
+
+const bgm = document.getElementById("bgm");
+const soundBtn = document.getElementById("sound");
+let soundOn = true;
 
 const MAX_ATTEMPTS = 3;
 const LOCKOUT_MS = 15000;
@@ -564,6 +589,45 @@ async function deriveDigest(text) {
 
   return bytesToHex(bits);
 }
+
+/* MUSIC */
+
+// Called inside the click that starts verification, so browsers allow playback.
+function primeMusic() {
+  bgm.volume = 0;
+  bgm.play().catch(() => {});
+}
+
+function fadeInMusic() {
+  if (!soundOn) {
+    bgm.pause();
+    return;
+  }
+
+  let v = 0;
+  const iv = setInterval(() => {
+    v += 0.03;
+    if (v >= 0.35) {
+      bgm.volume = 0.35;
+      clearInterval(iv);
+    } else {
+      bgm.volume = v;
+    }
+  }, 150);
+}
+
+soundBtn.addEventListener("click", () => {
+  soundOn = !soundOn;
+  soundBtn.textContent = soundOn ? "SOUND ON" : "SOUND OFF";
+
+  if (soundOn) {
+    bgm.play().catch(() => {});
+  } else {
+    bgm.pause();
+  }
+});
+
+/* INTERFACE */
 
 function setMessage(text, type = "") {
   message.textContent = text;
@@ -629,6 +693,8 @@ function startLockout() {
   lockoutTimer = setInterval(updateCountdown, 250);
 }
 
+/* PASSWORD VERIFICATION */
+
 form.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -651,6 +717,7 @@ form.addEventListener("submit", async event => {
   isVerifying = true;
   button.disabled = true;
   setMessage("VERIFYING...");
+  primeMusic();
 
   try {
     const digest = await deriveDigest(password);
@@ -659,11 +726,14 @@ form.addEventListener("submit", async event => {
       setMessage("ACCESS GRANTED.", "success");
       passwordInput.value = "";
       updateSlots();
+      fadeInMusic();
       showReveal();
       return;
     }
 
     failedAttempts++;
+    bgm.pause();
+    bgm.currentTime = 0;
     passwordInput.value = "";
     updateSlots();
 
@@ -678,6 +748,7 @@ form.addEventListener("submit", async event => {
     }
   } catch (error) {
     console.error("Verification error:", error);
+    bgm.pause();
     setMessage("VERIFICATION UNAVAILABLE. PLEASE TRY AGAIN.", "error");
   } finally {
     isVerifying = false;
@@ -691,6 +762,8 @@ form.addEventListener("submit", async event => {
     }
   }
 });
+
+/* INPUT HANDLING */
 
 passwordInput.addEventListener("input", () => {
   passwordInput.value = passwordInput.value
